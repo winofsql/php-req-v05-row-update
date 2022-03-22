@@ -8,30 +8,32 @@ function update_row() {
     global $pdo;
 
     foreach ($_POST as $key => $value) {
-        if ( $_POST[$key] != $_POST["sv" . $key] ) {
-            $sql =<<<UPDATE_SQL
-            UPDATE 社員マスタ SET
-                給与 = :kyuyo
-            WHERE 社員コード = :scode
+        if ( preg_match("/^[0-9]+$/", $key) ) {
+            if ( $_POST[$key] != $_POST["sv" . $key] ) {
+                $sql =<<<UPDATE_SQL
+                UPDATE 社員マスタ SET
+                    給与 = :kyuyo
+                WHERE 社員コード = :scode
 UPDATE_SQL;
 
-            try {
-                // SQL 文の準備
-                $stmt = $pdo->prepare($sql);
+                try {
+                    // SQL 文の準備
+                    $stmt = $pdo->prepare($sql);
 
-                // バインド
-                $stmt->bindValue( ':kyuyo', $_POST[$key], PDO::PARAM_INT );
-                $stmt->bindValue( ':scode', $key, PDO::PARAM_STR );
+                    // バインド
+                    $stmt->bindValue( ':kyuyo', $_POST[$key], PDO::PARAM_INT );
+                    $stmt->bindValue( ':scode', $key, PDO::PARAM_STR );
 
-                // 完成した SQL の実行
-                $stmt->execute();
+                    // 完成した SQL の実行
+                    $stmt->execute();
+
+                }
+                catch ( PDOException $e ) {
+                    $error = $e->getMessage();
+                    return false;
+                }
 
             }
-            catch ( PDOException $e ) {
-                $error = $e->getMessage();
-                return false;
-            }
-
         }
     }
 
