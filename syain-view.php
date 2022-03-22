@@ -33,6 +33,9 @@ html,body,form {
 td,th {
     cursor: default!important;
 }
+th {
+    white-space: pre;
+}
 
 #tbl {
     user-select: none;
